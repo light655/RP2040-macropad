@@ -27,7 +27,6 @@ spam = []
 
 # Initialise the RGB LED.
 RGB = PIO_RGB(board.GP16)
-RGB.connect()
 RGB.set_colour(0, 0, 0)
 
 
@@ -99,7 +98,7 @@ while True:
 
                 t += 1
 
-            # Disconnect RGB.
+            # Turn off the RGB LED.
             RGB.set_colour(0, 0, 0)
 
         # Mode 4 -> spam a set of macro keys
@@ -107,6 +106,7 @@ while True:
             these_keys = key_matrix.get_macro(i, j)
             # Set the keys to spam.
             spam = sorted(these_keys)
+            # Set the count for flashing LED.
             s = 0
 
     for r in released:
@@ -127,15 +127,21 @@ while True:
         if this_mode == '4':
             # Remove the keys for spamming.
             spam = []
+            # Turn off the RGB LED.
             RGB.set_colour(0, 0, 0)
 
     # Spam the keys every loop if there is keys to spam.        
     if len(spam) > 0:
+        # Flash the RGB LED every five spam cycles.
         if s % 5 == 0:
             RGB.set_colour(0, 25, 0)
+
         press_routine(reversed(spam))
         time.sleep(0.01)
         release_routine(spam)
+
+        # 40% duty cycle for the flashing LED.
         if s % 5 == 2:
             RGB.set_colour(0, 0, 0)
+        # Increment the count for flashing LED.
         s += 1
