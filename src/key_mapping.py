@@ -1,4 +1,5 @@
 KeyMap = {
+    'Empty': 0xFF,
     'Esc': 0x29,
     'F1': 0x3A,
     'F2': 0x3B,

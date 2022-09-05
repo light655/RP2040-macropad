@@ -158,12 +158,37 @@ class KeyMatrix:
 
                 # Write the strings into str_map.
                 if self._modes[i][j] == '3':
-                    for char in descriptions[i][j]:
-                        try:
-                            self._str_map[i][j].append(KeyMap[char])
-                        except KeyError:
-                            self._str_map[i][j].append(KeyMap["Shift"])
-                            self._str_map[i][j].append(ShiftMap[char])
+                    # Iterate through the string.
+                    k = 0
+                    while k < len(descriptions[i][j]):
+                        # Check for the escape character "\".
+                        if (char := descriptions[i][j][k]) == '\\':
+                            # Check if the next key is another "\".
+                            if (char := descriptions[i][j][k + 1]) == '\\':
+                                self._str_map[i][j].append(KeyMap["\\"])
+                                k += 1
+                            # "0" means that the next 10 characters are the name of the key.
+                            elif char == '0':
+                                next_key = descriptions[i][j][k + 2 : k + 2 + 10]
+                                self._str_map[i][j].append(KeyMap[next_key])
+                                k += 1 + 10
+                            # The number following the escape character is the number of character of the name of the key.
+                            else:
+                                next_key = descriptions[i][j][k + 2 : k + 2 + int(char)]
+                                self._str_map[i][j].append(KeyMap[next_key])
+                                k += 1 + int(char)
+                        else:
+                            try:
+                                self._str_map[i][j].append(KeyMap[char])
+                            except KeyError:
+                                # Check for spaces in the string.
+                                if char == ' ':
+                                    self._str_map[i][j].append(KeyMap["Space"])
+                                else:
+                                    self._str_map[i][j].append(KeyMap["Shift"])
+                                    self._str_map[i][j].append(ShiftMap[char])
+
+                        k += 1
 
 
     def get_mode(self, i: int, j: int):

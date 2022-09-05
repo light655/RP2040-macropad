@@ -87,8 +87,13 @@ while True:
                 else:
                     RGB.set_colour(0, 0, 10)
 
+                # The "Empty" key will send no code and delay 1ms.
+                if these_keys[t] == KeyMap["Empty"]:
+                    time.sleep(0.001)
+                    t += 1 
+                    continue
                 # If shifting is needed, press shift and the next key.
-                if these_keys[t] == KeyMap["Shift"]:
+                elif these_keys[t] == KeyMap["Shift"]:
                     keyboard.press(KeyMap["Shift"])
                     t += 1
 
