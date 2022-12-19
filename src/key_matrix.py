@@ -97,7 +97,10 @@ class KeyMatrix:
         for i in range(2 * row_num):
             line = txtfile.readline()
             r = i // 2          # Convert line number into row number.
-            line = line[:-1]            # Remove the \n at the end of the line.
+            if line[-2] == '\r':
+                line = line[:-2]            # Remove \r and \n at the end of the line.
+            else:
+                line = line[:-1]            # Remove \n at the end of the line.
 
             # If the current line is a mode line, add it into the mode list.
             if i % 2 == 0:
