@@ -28,6 +28,10 @@ spam = []
 # Initialise the RGB LED.
 RGB = PIO_RGB(board.GP16)
 RGB.set_colour(0, 0, 0)
+breathe_val = [0, 10, 0]
+breathe_dir = [0, 0, 1]
+t1 = time.monotonic()
+t2 = time.monotonic()
 
 
 # The press routine checks for keys that need to be pressed and have not been pressed.
@@ -150,3 +154,18 @@ while True:
             RGB.set_colour(0, 0, 0)
         # Increment the count for flashing LED.
         s += 1
+    # If there is no need to spam keys, make the RGB LED breathe
+    else:
+		t2 = time.monotonic()
+		if t2 - t1 >= 0.02:
+			for i in range(3):
+				if breathe_val[i] == 25 and breathe_dir[i] == 1:
+					breathe_dir[i - 1] = -1
+					breathe_dir[i] = 0
+				elif breathe_val[i] == 0 and breathe_dir[i] == -1:
+					breathe_dir[i - 1] = 1
+					breathe_dir[i] = 0
+
+				breathe_val[i] += breathe_dir[i]
+			t1 = time.monotonic()
+			RGB.set_colour(*breathe_val)
